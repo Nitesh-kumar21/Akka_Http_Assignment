@@ -22,19 +22,15 @@ object UserService extends App {
       get {
         val users = userRepo.getAllUsers
         if (users.isEmpty)
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<p>No user Found</p>"))
+          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "No user Found"))
         else
           complete(HttpEntity(ContentTypes.`application/json`, userRepo.getAllUsers.toJson.prettyPrint))
       }
-    } 
+    }
   } ~ path("getUser" / Segment) { userId =>
     get {
       val user = userRepo.getUser(userId)
-      val result = user match {
-        case Some(value) => value.toJson.prettyPrint
-        case None => "<p>No user by that ID</p>"
-      }
-      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, result))
+      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, user.toJson.prettyPrint))
     }
   } ~ path("addUser") {
     post {
@@ -48,7 +44,7 @@ object UserService extends App {
     delete {
       parameter("name") { name =>
         val deletedUser = userRepo.deleteUser(name)
-        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"Deleted User with name: ${deletedUser.get.name}"))
+        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"Deleted User with name: ${deletedUser.name}"))
       }
     }
   }
